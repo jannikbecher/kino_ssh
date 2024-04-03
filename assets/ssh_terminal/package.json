@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "kino-bundler --outdir ../../lib/assets/ssh_terminal/build",
+    "dev": "npm run build -- --watch --dev"
+  },
+  "dependencies": {
+    "@xterm/xterm": "^5.4.0",
+    "xterm-addon-fit": "^0.8.0"
+  },
+  "devDependencies": {
+    "@livebook/kino-bundler": "^0.1.0"
+  }
+}

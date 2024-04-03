@@ -61,13 +61,12 @@ defmodule KinoSSH.SSHCell do
         %{"use_password_secret" => true, "password_secret" => secret, "assign_to" => var} = attrs
       ) do
     var = if Kino.SmartCell.valid_variable_name?(var), do: var
-    password = System.fetch_env!("LB_#{secret}") |> to_charlist()
 
     quote do
       Kino.SSH.new(
         host: unquote(attrs["host"]),
         username: unquote(attrs["username"]),
-        password: unquote(password)
+        password: System.fetch_env!(unquote("LB_#{secret}")) |> to_charlist()
       )
     end
     |> build_var(var)

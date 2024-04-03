@@ -3,7 +3,7 @@ defmodule KinoSSH.SSHCell do
 
   use Kino.JS, assets_path: "lib/assets/ssh_cell/build"
   use Kino.JS.Live
-  use Kino.SmartCell, name: "SSH"
+  use Kino.SmartCell, name: "SSH Client"
 
   alias Kino.AttributeStore
 

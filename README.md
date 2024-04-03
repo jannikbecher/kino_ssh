@@ -1,21 +1,13 @@
-# KinoSsh
+# KinoSSH
 
-**TODO: Add description**
+**SSH integegration for [Livebook](https://livebook.dev).**
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `kino_ssh` to your list of dependencies in `mix.exs`:
+To bring KinoSSH to Livebook all you need to do is `Mix.install/2`:
 
 ```elixir
-def deps do
-  [
-    {:kino_ssh, "~> 0.1.0"}
-  ]
-end
+Mix.install([
+  {:kino_ssh, github: "jannikbecher/kino_ssh"}
+])
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/kino_ssh>.
-

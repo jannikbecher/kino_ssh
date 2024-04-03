@@ -38,6 +38,8 @@ defmodule Kino.SSH do
 
     {:ok, ref} = :ssh.connect(host, port, options)
     {:ok, chan} = :ssh_connection.session_channel(ref, :infinity)
+    :success = :ssh_connection.ptty_alloc(ref, chan, [])
+    :ok = :ssh_connection.shell(ref, chan)
     {:ok, assign(ctx, conn: {ref, chan}, subscriber: [], from: nil)}
   end
 
@@ -48,10 +50,6 @@ defmodule Kino.SSH do
 
   @impl true
   def handle_connect(ctx) do
-    {ref, chan} = ctx.assigns.conn
-    :success = :ssh_connection.ptty_alloc(ref, chan, [])
-    :ok = :ssh_connection.shell(ref, chan)
-
     {:ok, %{}, ctx}
   end
 
@@ -68,11 +66,12 @@ defmodule Kino.SSH do
     data =
       case msg do
         {:data, 0, 0, data} -> data
-         msg -> msg
+        msg -> msg
       end
 
     broadcast_event(ctx, "update_terminal", %{"data" => data})
     Enum.each(ctx.assigns.subscriber, fn pid -> send(pid, {:data, data}) end)
+
     ctx =
       if ctx.assigns.from do
         Kino.JS.Live.reply(ctx.assigns.from, data)
@@ -87,6 +86,7 @@ defmodule Kino.SSH do
   @impl true
   def handle_call({:command, command}, from, ctx) do
     {ref, chan} = ctx.assigns.conn
+
     case :ssh_connection.send(ref, chan, to_charlist(command) ++ ["\n"]) do
       :ok -> {:noreply, assign(ctx, from: from)}
       error -> {:reply, error, ctx}

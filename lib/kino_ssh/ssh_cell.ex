@@ -57,11 +57,18 @@ defmodule KinoSSH.SSHCell do
   def to_source(%{"use_password_secret" => false, "password" => ""}), do: ""
   def to_source(%{"use_password_secret" => true, "password_secret" => ""}), do: ""
 
-  def to_source(%{"use_password_secret" => true, "password_secret" => secret, "assign_to" => var} = attrs) do
+  def to_source(
+        %{"use_password_secret" => true, "password_secret" => secret, "assign_to" => var} = attrs
+      ) do
     var = if Kino.SmartCell.valid_variable_name?(var), do: var
     password = System.fetch_env!("LB_#{secret}") |> to_charlist()
+
     quote do
-      Kino.SSH.new(host: unquote(attrs["host"]), username: unquote(attrs["username"]), password: unquote(password))
+      Kino.SSH.new(
+        host: unquote(attrs["host"]),
+        username: unquote(attrs["username"]),
+        password: unquote(password)
+      )
     end
     |> build_var(var)
     |> Kino.SmartCell.quoted_to_string()
@@ -69,8 +76,13 @@ defmodule KinoSSH.SSHCell do
 
   def to_source(%{"assign_to" => var} = attrs) do
     var = if Kino.SmartCell.valid_variable_name?(var), do: var
+
     quote do
-      Kino.SSH.new(host: unquote(attrs["host"]), username: unquote(attrs["username"]), password: unquote(attrs["password"]))
+      Kino.SSH.new(
+        host: unquote(attrs["host"]),
+        username: unquote(attrs["username"]),
+        password: unquote(attrs["password"])
+      )
     end
     |> build_var(var)
     |> Kino.SmartCell.quoted_to_string()

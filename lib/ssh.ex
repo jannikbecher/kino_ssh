@@ -95,13 +95,13 @@ defmodule Kino.SSH do
 
   @impl true
   def handle_cast({:subscribe, pid}, ctx) do
-    ctx = update_in(ctx, [:assigns, :subscriber], &List.insert_at(&1, 0, pid))
-    {:noreply, ctx}
+    subscriber = [pid | ctx.assigns.subscriber]
+    {:noreply, assign(ctx, subscriber: subscriber)}
   end
 
   @impl true
   def handle_cast({:unsubscribe, pid}, ctx) do
-    ctx = update_in(ctx, [:assigns, :subscriber], &List.delete(&1, pid))
-    {:noreply, ctx}
+    subscriber = List.delete(ctx.assigns.subscriber, pid)
+    {:noreply, assign(ctx, subscriber: subscriber)}
   end
 end
